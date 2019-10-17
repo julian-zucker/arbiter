@@ -5,14 +5,13 @@ A declarative language for specifying machine learning models, in a way that hel
 
 ### Code sample
 ```
-FROM DATA “credit_data.csv”
+FROM DATA "credit_data.csv"
 TRAIN A decision tree
-PREDICTING “credit_decision”
-WRITE MODEL TO “credit_score.model”
-PROTECTED CLASSES “race”, “gender”, “age”
+PREDICTING "credit_decision"
+WRITE MODEL TO "credit_score.model"
+PROTECTED CLASSES "race", "gender", "age"
 REQUIRED FAIRNESS (disparate impact < 1.1)
-EXPLANATION “decision_reason”
-AGGREGATE 10 nearest neighbors
+EXPLANATION "decision_reason"
 ```
 
 ### Known limitations
