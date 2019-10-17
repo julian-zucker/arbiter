@@ -6,7 +6,7 @@ import interpreter
 
 
 def test_interpreter():
-    interpreter.run("test_fixtures/sample_program.untitledlanguage")
+    interpreter.run("test_fixtures/sample_program.arbiter")
 
     with open("test_fixtures/credit_data.csv") as datafile:
         datafile.readline() # skip header
