@@ -1,0 +1,7 @@
+FROM DATA "test_fixtures/credit_data.csv"
+TRAIN A "decision tree"
+PREDICTING "default"
+WRITE MODEL TO "test_fixtures/credit_score.model"
+PROTECTED CLASSES "age"
+REQUIRED FAIRNESS ( disparate impact < 1.1 )
+EXPLANATION "decision_reason"
