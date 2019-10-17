@@ -1,6 +1,4 @@
-### untitledlanguage
-
-### Goal
+### Arbiter
 A declarative language for specifying machine learning models, in a way that helps the practice of ethical machine learning.
 
 ### Code sample
