@@ -34,9 +34,7 @@ def parse_file(filename):
     with open(filename, 'r') as f:
         tree = l.parse(f.read())
 
-
     directives = {}
-
     for directive_name in [
         "from_data",
         "train_a",

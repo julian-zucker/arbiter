@@ -1,5 +1,7 @@
 import csv
 import pickle
+import tensorflow as tf
+import numpy as np
 
 
 class TrainingRegime:
@@ -20,8 +22,16 @@ class TrainingRegime:
     def run(self):
         data, fieldnames = _read_data(self.from_data)
         tabular_data, labels = _tabular_data(data, fieldnames, self.label_column_name)
-        model = _train_model(tabular_data, labels, self.model_type)
-        _check_fairness(tabular_data, model, fieldnames.index(self.protected_class_column_name), self.required_fairness)
+        protected_class_index = fieldnames.index(self.protected_class_column_name)
+        model = _preprocess_data(
+            data,
+            self.protected_class_column_name,
+            protected_class_index,
+            self.label_column_name,
+            self.required_fairness,
+        )
+        # model = _train_model(train_data, labels, self.model_type)
+        # _check_fairness(tabular_data, model, protected_class_index, self.required_fairness)
         _write_model(model, self.write_model_to)
 
 
@@ -41,7 +51,6 @@ def _train_model(features, labels, model_type):
     if model_type != "decision tree":
         raise ValueError("Can only train decision trees")
 
-
     from sklearn.model_selection import train_test_split
 
     features_train, features_test, labels_train, labels_test = train_test_split(features, labels)
@@ -50,7 +59,7 @@ def _train_model(features, labels, model_type):
 
     model = DecisionTreeClassifier().fit(features_train, labels_train)
     predictions = model.predict(features_test)
-    print(f"Accuracy: {sum(predictions == labels_test) / len(features_test)}")
+    print(f"Accuracy: {sum(predictions == labels_test) / float(len(features_test))}")
     return model
 
 
@@ -69,20 +78,61 @@ def _tabular_data(data, fieldnames, label_column_name):
     return features, labels
 
 
-def _check_fairness(data, model, protected_class_index, required_fairness):
-    priv_data = []
-    non_priv_data = []
-    for row in data:
-        if row[protected_class_index] == 1:
-            priv_data.append(row)
-        else:
-            non_priv_data.append(row)
+def _preprocess_data(
+    data, protected_attribute_name, protected_attribute_index, label_name, required_fairness
+):
+    from pandas import DataFrame
+    from aif360.datasets import BinaryLabelDataset
 
-    print(sum(model.predict(priv_data) - 1))
-    disparate_impact = float(sum(model.predict(priv_data) - 1) / sum(model.predict(non_priv_data) - 1))
+    dataset = BinaryLabelDataset(
+        df=DataFrame(data),
+        protected_attribute_names={protected_attribute_name},
+        label_names={label_name},
+        favorable_label=2,
+        unfavorable_label=1,
+    )
+    train, test = dataset.split([0.8])
+
+    from aif360.algorithms.inprocessing import AdversarialDebiasing
+
+    sess = tf.compat.v1.Session()
+    debiaser = AdversarialDebiasing(
+        unprivileged_groups=({protected_attribute_name: 0},),
+        privileged_groups=({protected_attribute_name: 1},),
+        scope_name="debiaser",
+        debias=True,
+        sess=sess,
+    )
+    debiaser.fit(train)
+
+    from sklearn.ensemble import RandomForestClassifier
+
+    model = RandomForestClassifier(class_weight="balanced")
+
+    X_tr = np.delete(train.features, protected_attribute_index, axis=1)
+    y_tr = train.labels.ravel()
+    model.fit(X_tr, y_tr)
+
+    test_pred = test.copy(deepcopy=True)
+    test_pred.scores = model.predict(np.delete(debiaser.predict(test).features, protected_attribute_index, axis=1))
+
+    accuracy = np.sum(np.equal(test.scores, test_pred.scores))
+
+    from aif360.metrics import ClassificationMetric
+    disparate_impact = ClassificationMetric(
+        test,
+        test_pred,
+        unprivileged_groups=({protected_attribute_name: 0},),
+        privileged_groups=({protected_attribute_name: 1},),
+    ).disparate_impact()
+
+    print(f"Accuracy: {accuracy}")
     print(f"Disparate impact: {disparate_impact}")
     if disparate_impact > float(required_fairness):
-        raise ValueError("Too unfair!")
+        raise ValueError(
+            f"Too unfair! Disparate impact was {disparate_impact} but must be less than {required_fairness}"
+        )
+
 
 def _write_model(model, output_model_filename):
     with open(output_model_filename, "wb") as output_file:
