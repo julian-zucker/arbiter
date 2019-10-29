@@ -1,0 +1,173 @@
+\documentclass[letterpaper]{article}
+\usepackage{aaai20}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage[hyphens]{url}
+\usepackage{graphicx}
+\urlstyle{rm}
+\def\UrlFont{\rm}
+\usepackage{graphicx}
+\frenchspacing
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
+% Add additional packages here, but check
+% the list of disallowed packages
+% (including, but not limited to
+% authblk, caption, CJK, float, fullpage, geometry,
+% hyperref, layout, nameref, natbib, savetrees,
+% setspace, titlesec, tocbibind, ulem)
+% and illegal commands provided in the
+% common formatting errors document
+% included in the  Author Kit before doing so.
+\usepackage{listings}
+\usepackage{xcolor}
+
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
+
+% PDFINFO
+% You are required to complete the following
+% for pass-through to the PDF.
+% No LaTeX commands of any kind may be
+% entered. The parentheses and spaces
+% are an integral part of the
+% pdfinfo script and must not
+%
+\pdfinfo{
+		/Title (Arbiter: A Domain-Specific Language for Ethical Machine Learning)
+		/Author (<Removed for double blind review>)
+}
+%
+% Section Numbers
+% Uncomment if you want to use section numbers
+% and change the 0 to a 1 or 2
+\setcounter{secnumdepth}{1}
+
+% Title and Author Information Must Immediately Follow
+% the pdfinfo within the preamble
+%
+\title{Arbiter: A Domain-Specific Language for Ethical Machine Learning}
+\author{Author 1 - Computer Science \and Author 2 - Computer Science and Philosophy }
+
+\begin{document}
+\maketitle
+\begin{abstract}
+The widespread deployment of machine learning models in high-stakes decision making scenarios requires a code of ethics for machine learning practitioners. We identify four of the primary components required for the ethical practice of machine learning: transparency, fairness, accountability, and reproducibility. We introduce Arbiter, a domain-specific programming language for machine learning practitioners that is designed for ethical machine learning. Arbiter provides a notation for recording how machine learning models will be trained, and we show how this notation can encourage the four components of ethical machine learning.
+\end{abstract}
+
+
+\section{Introduction}
+In this paper, we discuss what ethical machine learning is, demonstrate what a domain-specific programming language for ethical machine learning could look like, and demonstrate how that language will aid in the practice of ethical machine learning.
+
+A domain-specific language (DSL) is ``a computer programming language of limited expressiveness focused on a particular domain” (Fowler 2010). DSLs contrast with general-purpose languages, such as Python, which aim for universal applicability. When using a DSL, programmers can ''[use] the language of the domain to state the problem and to articulate solution processes” (Felleisen 2015), greatly increasing their productivity. The code they write can either look similar to the mathematical notation for the problem they are solving, such as in SPL (Werk 2012), or look similar to a plain English description of the desired computation, such as in SQL (Date 1997). The resemblance of SQL to plain English, for example, makes SQL impose less of a cognitive burden on programmers than general-purpose languages do.
+
+Machine learning models are often used in high-stakes decision making, such as in credit-scoring, housing, and hiring decisions. The outcomes of these decisions alter the life prospects of the decision-subjects, so it is important that the decisions are justified. For instance, a machine learning model used across America to determine the length of criminal sentences is biased against black people, which is an example of unethical machine learning (Angwin 2016). Machine learning models tend to ``reproduce existing patterns of discrimination” (Barocas 2016), so active interventions must be taken to ensure that models are fair. Fortunately, there are many such interventions, including pre-processing the input data, altering the training method, and post-processing the predictions made by the model (Bellamy 2018, Haijan 2016). However, merely having a fair model is not enough: models must also be accountable to ensure that they are being used fairly (Binns 2016). Accountability is not just a property of the model, but also a property of the ''training regime”, the bundle of code and data used to develop the model. And reproducibility is required to ensure auditors can guarantee that a deployed model is equivalent to the models that were tested for fairness, and that the code they audit is the same code that was used to create a deployed model. 
+
+Ethical machine learning is an underspecified term, but it definitely includes transparency, fairness, accountability, and reproducibility. Using this definition, we will spend the rest of the paper arguing that DSLs can help practitioners practice ethical machine learning.
+
+\section{Previous Domain-Specific Languages for Machine Learning}
+Machine learning practitioners have designed and implemented many DSLs to aid the practice of machine learning. For instance, TensorFlow is a DSL for expressing the matrix multiplications that are required to implement a neural network. By expressing their computations within TensorFlow’s domain-specific language, users can increase the performance and legibility of their code (Abadi 2016). 
+
+While there are no existing DSLs for ethical machine learning, there are libraries and toolkits for training fair models and evaluating the fairness of existing models. AI Fairness 360 is one prominent example (Bellamy 2018). However, using AI Fairness 360 is an ad-hoc intervention, applied after the training of a model and potentially difficult for auditors to reproduce, because the fairness-testing code may not be stored in the same place as the code that produced the model. DSLs for ethical machine learning can overcome this problem by being integral to the training regime.
+
+Outside of machine learning, DSLs have been used before to encourage or require best practices for programming. For instance, LangSec is the idea that security can be increased if ``the acceptable input to a program [is] well-defined (i.e., via a grammar), as simple as possible (on the Chomsky scale of syntactic complexity), and fully validated before use” (Momot 2016). In other words, LangSec requires that software engineers use a DSL for input validation. By explicitly limiting the set of valid inputs to a program, you can improve the security of that program. We will show that by explicitly limiting the set of expressible training regimes, we can encourage ethical machine learning practices.
+
+\section{Ethical Machine Learning}
+Ethical machine learning describes ethical, responsible, and thoughtful practices for the development and use of machine learning technology. Various ethicists, including Barocas (2016) and Binns (2017), have defended a number of principles as the core tenets of ethical machine learning; but they all agree that transparency, fairness, accountability, and reproducibility play important roles. Though this is not an exhaustive list of the tenets that constitute ethical machine learning, each of these principles is required for the responsible development and deployment of machine learning models.
+
+Transparency refers to openness and understandability in the training of machine learning models. A training regime is transparent if auditors and the general public can understand the model. Transparency is required because, although black-box testing can be done on the resulting models, it is much easier to audit and understand a training regime than the resulting model (de Laat 2019). Ethical machine learning must include transparency, because auditors and the general public must understand how models are being trained in order to evaluate those models.
+
+Fairness in machine learning has many definitions, but they are all measures of equality in the distribution of outcomes by models. The deployment of unfair machine learning systems ``raises serious concerns because it risks limiting our ability to achieve the goals that we have set for ourselves and access the opportunities for which we are qualified” (Barocas 2019). However, defining fairness is difficult. AI Fairness 360 defines over 70 ways to measure fairness (Bellamy 2018), and many of these metrics are contradictory, that is, an increase in one may necessitate a decrease in another (Kleinberg et al., 2016). But measuring the fairness of models is still important, both for legal compliance (Barocas 2016) and for ethical reasons (Binns 2018).
+
+Accountability in machine learning is defined by Binns (2017): a machine learning model is accountable if it ``[provides] its decision-subjects with reasons and explanations” for the decisions it makes. Without the capacity or obligation to provide decision-subjects with explanations, practitioners can design training regimes that produce algorithmic decision-makers that are discriminatory, arbitrary, or otherwise unjust, and get away with it. Accountability compels the defense of design decisions, and in doing so compels ethical design.
+
+Reproducibility in machine learning requires that practitioners have the ability to reproduce models independently. Olarisade (2017) argues that machine learning practitioners must work to increase reproducibility, so that other people will be able to recreate any produced models in order to test them. In order for other machine learning practitioners to re-create the model to test it for unfairness, the same training regime must produce the same model.
+
+As the following sections will show, a domain-specific language can help machine learning practitioners uphold each of the tenets of ethical machine learning described above.
+
+\section{An Overview of the Language}
+The rest of this paper will examine Arbiter, a DSL \footnote{An implementation of an arbiter-like language can be found at [ELIDED FOR PEER REVIEW]. This implementation proves that it would be feasible to implement Arbiter, but the point of this paper is to explain the ethical benefits of such a language existing, not to demonstrate an implementation.} for specifying training regimes. Listing 1 is an example of a training regime, specified in Arbiter. All of the code in Listing 1 is explained in the following sections.
+
+\begin{lstlisting}[caption=Arbiter example.]
+FROM DATA `credit_data.csv'
+TRAIN A `decision tree'
+PREDICTING `default'
+WRITE MODEL TO `credit_score.model'
+PROTECTED CLASSES `race', `gender', `age'
+REQUIRED FAIRNESS `disparate impact' < 1.1
+EXPLANATION `decision_reason'
+\end{lstlisting}
+
+This language is declarative, that is, users will ``say what is required and let the system determine how to achieve it” (Roy 2004), rather than ''say[ing] how to do something”(Roy 2004), as one must in imperative programming languages. The declarative style of programming is not strictly better than the imperative style: programming languages are tools that give us notations to express computation, and “a notation is never absolutely good ... but good only in relation to certain tasks.” (Green 1989). However, as the rest of this paper will show, the declarative paradigm and the notation implemented by Arbiter is beneficial to the task of producing transparent, fair, accountable, and reproducible machine learning models. 
+
+\section{Improving Transparency}	
+It is important that the general public as well as auditors can understand the training regime that was used to develop a model; otherwise they may not be able to identify flaws or bias being introduced during the training of the model. Training regimes specified in Arbiter are understandable by people who are not machine learning practitioners. For instance, lines 1-4 in  Listing 1 describes a fairly archetypal modeling task: given a file with comma-separated data (a ``CSV file”) containing information about historical creditor defaults, it will produce a model that can predict whether a person is likely to default on a loan. The resulting model can be employed to replace human decision-making about creditworthiness.
+
+Arbiter is more transparent than imperative programming languages are. Arbiter only needs to express the essential aspects of the machine learning model training process, while a general-purpose language must concern itself with incidental aspects of the training process, such as reading the data file and converting it into the right data format. For example, the Python code below, which is equivalent to lines 1-3 in [[ FIGURE NAME]], is much more difficult to read.
+
+\begin{lstlisting}[language=Python,caption=Python code equivalent to Listing 1]
+with open(``credit_data.csv'') as credit_data:
+    file_content = [line for line in csv.reader(credit_data)]
+labels = [int(line[-1]) for line in file_content]
+features = [[float(x) for x in line[0:-1]] for line in file_content]
+
+from sklearn.model_selection import train_test_split
+features_train, features_test, labels_train, labels_test = \
+    train_test_split(features, labels)
+
+from sklearn.tree import DecisionTreeClassifier
+tree = DecisionTreeClassifier().fit(features_train, labels_train)
+predictions = tree.predict(features_test)
+print(f"Accuracy: {sum(predictions == labels_test) / len(features_test)}")
+\end{lstlisting}
+
+\section{Improving Fairness}
+It is illegal and unethical to deploy models that are biased against people in marginalized classes (Barocas 2016). Arbiter allows users to make guarantees about the level of bias in any produced models. Perfect fairness of a model is impossible, but ``surely some are fairer than others” (Grant 2019), and Arbiter encourages practitioners to use the fairer models. Lines 5 and 6 in [[ FIGURE NAME ]] specifies that columns of data named ''race”, “gender”, and “age” represent marginalized classes, and that the resulting model must have disparate impact less than 1.1 for each of those classes. Disparate impact is a measure of unfair allocation of benefit across marginalized classes, calculated by taking the ratio of positive outcomes for the privileged class, and dividing by the ratio of positive outcomes for the marginalized class. A disparate impact of 1 represents benefit being perfectly evenly distributed, and numbers larger than 1 represent more unfair distributions. While this de-biasing step will have to be optional, as not all datasets contain data about marginalized classes, the language could mandate that the \texttt{PROTECTED CLASSES} and \texttt{REQUIRED FAIRNESS} directives are included anyway, so that omitting a fairness requirement for your model is glaringly obvious to any auditor of the code, regardless of their familiarity with machine learning.
+
+Arbiter can use existing toolkits, such as AI Fairness 360, at multiple stages in the training process, in order to reduce bias. Practitioners will not need to know how to use these often complex tools, because they can simply specify the level of fairness that they want to guarantee, and let Arbiter figure out how to accomplish that.
+
+\section{Improving Accountability}
+Accountability is a necessary piece of ethical machine learning. To be accountable, a model must ``provide its decision-subjects with reasons and explanations”(Binns 2017) for the decisions it makes. Arbiter can ensure that models are explainable: because Arbiter holds the responsibility for training the model, the language can ensure that the model is trained in a way that includes explanations. For example, it could use TED (Hind 2019), allowing users to specify a column of the input dataset that contains the explanation for the decisions made in the input dataset, as shown in line 7 in Listing 1. Then, the model produced can return not only a prediction but also an explanation of the reason for that prediction.
+
+Furthermore, Arbiter could automatically produce tools for exploring and explaining the models that it generates. For instance, a tool that allows practitioners to apply the model to various data points to see what decision is made, and what explanation for the decision is given. Additional tooling that supports transparency can be produced automatically, without requiring any time or effort from the practitioner training the model, similarly to how the team behind TensorFlow created TensorBoard, a tool that automatically visualizes neural networks being trained in TensorFlow. Having tools for accountability readily available will increase the average accountability of models being created.
+
+\section{Improving Reproducibility}
+Training machine learning models is typically a non-deterministic process involving stochastic methods. These stochastic methods ``seed” a random number generator with the current time, preventing future auditors from replicating the exact training process. But merely choosing a static ''seed” value is not enough to guarantee reproducibility, as there are many other ways that software can be non-deterministic (Maste 2017), and the compilers or interpreters may contain vulnerabilities (Thompson 1984). So, auditors re-running a training regime will almost certainly end up with a different model. And once the two models are not exactly byte-for-byte identical, it becomes very difficult to identify the difference in behavior between the two (Perry 2014).
+
+However, a language like Arbiter can guarantee reproducibility. For example, by using a hash of the data in the training specification as the seed value, Arbiter can guarantee that every execution of the same training specification will be using the same random seed. Arbiter can be implemented to produce the same model for any input training regime, unlike Python libraries, which cannot guarantee reproducibility. Even if a Python library is itself reproducible, users may misuse it or write non-reproducible code that calls into it, resulting in non-deterministic training regimes. Training must be reproducible, and this can only be accomplished through a DSL.
+
+\section{Conclusion}
+We presented Arbiter, a DSL that can aid in the practice of ethical machine learning. Arbiter improves transparency, mandates fairness, enables accountability, and guarantees reproducibility in the machine learning training process. While Arbiter is not a silver bullet, it lays the groundwork for a programming-language-based approach to ethical machine learning. And, by establishing some desirable features of a DSL for ethical machine learning, we have provided a basis for further work in DSL design for ethical programming in general. 
+
+% References and End of Paper
+% These lines must be placed at the end of your paper
+\bibliography{Bibliography-File}
+\bibliographystyle{aaai}
+\end{document}
+
