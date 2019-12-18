@@ -17,6 +17,7 @@
 % included in the  Author Kit before doing so.
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{hyperref}
 
 % \newcommand{\citep}[1]{\cite{#1}}
 % \newcommand{\citet}[1]{\citeauthor{#1} \shortcite{#1}}
@@ -60,7 +61,7 @@
 		/Title (Arbiter: A Domain-Specific Language for Ethical Machine Learning)
 		/Author (Julian Zucker and Myraeka d'Leeuwen)
 }
-\title{Arbiter: A Domain-Specific Language for Ethical Machine Learning}
+\title{Arbiter: A Domain-Specific Language \\for Ethical Machine Learning}
 \author{Julian Zucker}
 \affiliation{%
     \institution{Northeastern University}
@@ -81,15 +82,15 @@
 % Uncomment if you want to use section numbers
 % and change the 0 to a 1 or 2
 % \setcounter{secnumdepth}{1}
-
 \copyrightyear{2020}
 \acmYear{2020}
-\setcopyright{acmcopyright}
-\acmConference[AIES '20] {2020 AAAI/ACM Conference on AI, Ethics, and Society}{February 7--8, 2020}{New York, NY, USA}
-\acmBooktitle{2020 AAAI/ACM Conference on AI, Ethics, and Society (AIES'20), February 7--8, 2020, New York, NY, USA}
+\setcopyright{acmlicensed}
+\acmConference[AIES '20]{Proceedings of the 2020 AAAI/ACM Conference on AI, Ethics, and Society}{February 7--8, 2020}{New York, NY, USA}
+\acmBooktitle{Proceedings of the 2020 AAAI/ACM Conference on AI, Ethics, and Society (AIES '20), February 7--8, 2020, New York, NY, USA}
 \acmPrice{15.00}
-\acmDOI{10.1145/XXXXXX.XXXXXX}
+\acmDOI{10.1145/3375627.3375858}
 \acmISBN{978-1-4503-7110-0/20/02}
+
 
 \begin{document}
 \begin{abstract}
@@ -153,7 +154,7 @@ Accountability in machine learning is defined by Binns \shortcite{Binns2017}: a 
 Reproducibility in machine learning requires that practitioners have the ability to reproduce models independently. Olorisade \shortcite{Olorisade2017} argues that machine learning practitioners must work to increase reproducibility, so that other people will be able to recreate any produced models in order to test them. In order for other machine learning practitioners to re-create the model to test it for unfairness, a training regime must produce the exact same model each time it is run. The requirement for reproducibility in other domains, such as biology, is that other researchers can recreate statistically similar results under the same circumstances. Reproducibility, in both scientific research and machine learning, is a safeguard against the designers of experiments or algorithms either intentionally or unknowingly introducing biases or flaws in their design. This safeguard not only ensures that the distributions of outcomes are accurate, but that the series of design decisions used to get there are justifiable and ethical.
 
 \section{An Overview of the Language}
-A domain-specific language can help machine learning practitioners uphold each of the tenets of ethical machine learning described above. The rest of this paper will examine Arbiter\footnote{An implementation of Arbiter can be found at [ELIDED FOR PEER REVIEW]. This implementation demonstrates that it would be feasible to implement Arbiter. However, the point of this paper is to explain the ethical benefits of such a language existing, not to propose the adoption of Arbiter in particular, so we choose not to focus on the implementation.}, a DSL for specifying training regimes that we claim will aid in the practice of ethical machine learning. Listing 1 is an example of a training regime, specified in Arbiter. All of the code in Listing 1 is explained in the following sections.
+A domain-specific language can help machine learning practitioners uphold each of the tenets of ethical machine learning described above. The rest of this paper will examine Arbiter\footnote{A sample implementation of Arbiter can be found at \href{https://github.com/julian-zucker/arbiter}{https://github.com/julian-zucker/arbiter}. This implementation demonstrates that it would be feasible to implement Arbiter. However, the point of this paper is to explain the ethical benefits of such a language existing, not to propose the adoption of Arbiter in particular, so we choose not to focus on the implementation.}, a DSL for specifying training regimes that we claim will aid in the practice of ethical machine learning. Listing 1 is an example of a training regime, specified in Arbiter. All of the code in Listing 1 is explained in the following sections.
 
 \begin{lstlisting}[language=Python,caption=Arbiter example.]
 FROM DATA 'credit_data.csv'
