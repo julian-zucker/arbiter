@@ -18,6 +18,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage{balance}
 
 % \newcommand{\citep}[1]{\cite{#1}}
 % \newcommand{\citet}[1]{\citeauthor{#1} \shortcite{#1}}
@@ -47,7 +48,6 @@
 }
 
 \lstset{style=mystyle}
-\fancyhead{}
 
 % PDFINFO
 % You are required to complete the following
@@ -93,6 +93,7 @@
 
 
 \begin{document}
+\fancyhead{}
 \begin{abstract}
 The widespread deployment of machine learning models in high-stakes decision making scenarios requires a code of ethics for machine learning practitioners. We identify four of the primary components required for the ethical practice of machine learning: transparency, fairness, accountability, and reproducibility. We introduce Arbiter, a domain-specific programming language for machine learning practitioners that is designed for ethical machine learning. Arbiter provides a notation for recording how machine learning models will be trained, and we show how this notation can encourage the four described components of ethical machine learning.
 \end{abstract}
@@ -214,5 +215,6 @@ We presented Arbiter, a DSL that can aid in the practice of ethical machine lear
 % References and End of Paper
 % These lines must be placed at the end of your paper
 \bibliographystyle{ACM-Reference-Format}
+\balance
 \bibliography{arbiter.bib}
 \end{document}
